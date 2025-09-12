@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "support-pilot": {
+      "command": "node",
+      "args": ["C:\\git\\SupportPilot\\dist\\index.js"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "azure-devops": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@azure-devops/mcp",
+				"msazure"
+			]
+		},
+    "microsoft.docs.mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://learn.microsoft.com/api/mcp"
+      ]
+    }
+  }
+}
