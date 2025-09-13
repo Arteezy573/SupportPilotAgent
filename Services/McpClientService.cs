@@ -55,11 +55,17 @@ namespace SupportPilotAgent.Services
             // Use provided allowed tools, or default to specific tools for token rate limiting
             allowedTools ??= new HashSet<string>
             {
+                // azure devops mcp
                 "wit_my_work_items",
                 "wit_get_work_items_batch_by_ids",
                 "core_list_projects",
                 "wit_get_work_item",
-                "wit_create_work_item"
+                "wit_create_work_item",
+                // azure mcp
+                "kusto",
+                // microsoft doc
+                "microsoft_docs_search",
+                "microsoft_docs_fetch"
             };
             
             foreach (var serverEntry in mcpServers)
