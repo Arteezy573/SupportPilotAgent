@@ -11,13 +11,13 @@ namespace SupportPilotAgent.Services
         private readonly List<IMcpClient> _mcpClients = new List<IMcpClient>();
         private bool _disposed;
 
-        public async Task<IMcpClient> CreateMcpClientAsync(string serverCommand, string[] serverArgs)
+        public async Task<IMcpClient> CreateMcpClientAsync(string serverName, string serverCommand, string[] serverArgs)
         {
             try
             {
                 var transport = new StdioClientTransport(new StdioClientTransportOptions
                 {
-                    Name = "AzureDevOps",
+                    Name = serverName,
                     Command = serverCommand,
                     Arguments = serverArgs
                 });
@@ -71,7 +71,7 @@ namespace SupportPilotAgent.Services
                 {
                     Console.WriteLine($"Connecting to MCP server '{serverName}'...");
                     
-                    var mcpClient = await CreateMcpClientAsync(serverConfig.Command, serverConfig.Args);
+                    var mcpClient = await CreateMcpClientAsync(serverName, serverConfig.Command, serverConfig.Args);
                     var allMcpTools = await GetToolsAsync(mcpClient);
                     
                     // Filter tools to only include allowed ones
