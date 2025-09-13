@@ -105,7 +105,9 @@ When analyzing support tickets:
                 Kernel = kernel,
                 Arguments = new KernelArguments(new PromptExecutionSettings()
                 {
-                    FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+#pragma warning disable SKEXP0001  // suppress specific warning
+                    FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: new() { RetainArgumentTypes = true })
+#pragma warning restore SKEXP0001   // restore warning
                 })
             };
 
