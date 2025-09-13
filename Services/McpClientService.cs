@@ -48,9 +48,19 @@ namespace SupportPilotAgent.Services
             }
         }
 
-        public async Task<int> LoadMcpServersAsync(Kernel kernel, Dictionary<string, McpServerConfig> mcpServers)
+        public async Task<int> LoadMcpServersAsync(Kernel kernel, Dictionary<string, McpServerConfig> mcpServers, HashSet<string>? allowedTools = null)
         {
             int totalToolsLoaded = 0;
+            
+            // Use provided allowed tools, or default to specific tools for token rate limiting
+            allowedTools ??= new HashSet<string>
+            {
+                "wit_my_work_items",
+                "wit_get_work_items_batch_by_ids",
+                "core_list_projects",
+                "wit_get_work_item",
+                "wit_create_work_item"
+            };
             
             foreach (var serverEntry in mcpServers)
             {
@@ -62,12 +72,25 @@ namespace SupportPilotAgent.Services
                     Console.WriteLine($"Connecting to MCP server '{serverName}'...");
                     
                     var mcpClient = await CreateMcpClientAsync(serverConfig.Command, serverConfig.Args);
-                    var mcpTools = await GetToolsAsync(mcpClient);
+                    var allMcpTools = await GetToolsAsync(mcpClient);
                     
-                    RegisterMcpToolsAsKernelFunctions(kernel, mcpTools, serverName);
+                    // Filter tools to only include allowed ones
+                    var filteredTools = allMcpTools.Where(tool => allowedTools.Contains(tool.Name)).ToList();
                     
-                    Console.WriteLine($"Successfully loaded {mcpTools.Count} tools from MCP server '{serverName}'");
-                    totalToolsLoaded += mcpTools.Count;
+                    // Log available tools for debugging
+                    Console.WriteLine($"Available tools in '{serverName}': {string.Join(", ", allMcpTools.Select(t => t.Name))}");
+                    Console.WriteLine($"Allowed tools filter: {string.Join(", ", allowedTools)}");
+                    
+                    if (filteredTools.Count > 0)
+                    {
+                        RegisterMcpToolsAsKernelFunctions(kernel, filteredTools, serverName, serverConfig.Description);
+                        Console.WriteLine($"Successfully loaded {filteredTools.Count} filtered tools from MCP server '{serverName}' (out of {allMcpTools.Count} available tools)");
+                        totalToolsLoaded += filteredTools.Count;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No allowed tools found in MCP server '{serverName}' (checked {allMcpTools.Count} tools)");
+                    }
                 }
                 catch (Exception ex)
                 {
