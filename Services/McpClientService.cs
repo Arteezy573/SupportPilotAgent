@@ -79,13 +79,18 @@ namespace SupportPilotAgent.Services
             return totalToolsLoaded;
         }
 
-        public void RegisterMcpToolsAsKernelFunctions(Kernel kernel, IList<McpClientTool> tools, string pluginName = "MCPTools")
+        public void RegisterMcpToolsAsKernelFunctions(Kernel kernel, IList<McpClientTool> tools, string pluginName, string description = "")
         {
             try
             {
                 if (tools.Count > 0)
                 {
-                    kernel.Plugins.AddFromFunctions(pluginName, tools.Select(tool => tool.AsKernelFunction()));
+                    // Use provided description or default fallback
+                    var pluginDescription = !string.IsNullOrEmpty(description) 
+                        ? description 
+                        : $"MCP server plugin: {pluginName}";
+                    
+                    kernel.Plugins.AddFromFunctions(pluginName, description: pluginDescription, tools.Select(tool => tool.AsKernelFunction()));
                 }
             }
             catch (Exception ex)

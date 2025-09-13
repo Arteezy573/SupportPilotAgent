@@ -93,10 +93,6 @@ Guidelines:
 - Use available plugins to gather comprehensive information
 - Structure your responses clearly and concisely
 
-Available Tools:
-- EmailSummary plugin: For analyzing email content, extracting key info, categorizing tickets, and suggesting diagnostics
-- AzureDevOps plugin: For connecting to Azure DevOps, querying work items, and retrieving details
-
 When analyzing support tickets:
 1. First summarize the email content
 2. Extract key customer and technical information  

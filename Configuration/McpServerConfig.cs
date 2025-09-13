@@ -4,6 +4,7 @@ namespace SupportPilotAgent.Configuration
     {
         public string Command { get; set; } = string.Empty;
         public string[] Args { get; set; } = Array.Empty<string>();
+        public string Description { get; set; } = string.Empty;
     }
 
     public class McpServersConfig
