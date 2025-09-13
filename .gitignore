@@ -71,3 +71,12 @@ _pkginfo.txt
 
 # Visual Studio cache/options directory
 .vs/
+
+# Claude Code settings
+.claude/
+
+# MCP server logs
+*.mcp.log
+
+# Temporary MCP files
+.mcp/
