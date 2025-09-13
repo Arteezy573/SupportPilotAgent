@@ -6,6 +6,7 @@ using SupportPilotAgent.Configuration;
 using SupportPilotAgent.Services;
 using SupportPilotAgent.Plugins.EmailSummaryPlugin;
 using ModelContextProtocol.Client;
+using Azure.Identity;
 
 namespace SupportPilotAgent
 {
@@ -46,11 +47,25 @@ namespace SupportPilotAgent
             var builder = Kernel.CreateBuilder();
 
             // Add Azure OpenAI connector
-            builder.AddAzureOpenAIChatCompletion(
-                deploymentName: _azureOpenAIConfig.DeploymentName,
-                endpoint: _azureOpenAIConfig.Endpoint,
-                apiKey: _azureOpenAIConfig.ApiKey,
-                apiVersion: _azureOpenAIConfig.ApiVersion);
+            if (string.IsNullOrEmpty(_azureOpenAIConfig.ApiKey))
+            {
+                // Use DefaultAzureCredential when no API key is provided
+                var credential = new DefaultAzureCredential();
+                builder.AddAzureOpenAIChatCompletion(
+                    deploymentName: _azureOpenAIConfig.DeploymentName,
+                    endpoint: _azureOpenAIConfig.Endpoint,
+                    credential,
+                    apiVersion: _azureOpenAIConfig.ApiVersion);
+            }
+            else
+            {
+                // Use API key when provided
+                builder.AddAzureOpenAIChatCompletion(
+                    deploymentName: _azureOpenAIConfig.DeploymentName,
+                    endpoint: _azureOpenAIConfig.Endpoint,
+                    apiKey: _azureOpenAIConfig.ApiKey,
+                    apiVersion: _azureOpenAIConfig.ApiVersion);
+            }
 
             var kernel = builder.Build();
 

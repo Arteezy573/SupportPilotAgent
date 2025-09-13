@@ -78,7 +78,7 @@ static AzureOpenAIConfig LoadConfiguration()
             {
                 azureOpenAISection.Bind(config);
                 
-                if (!string.IsNullOrEmpty(config.Endpoint) && !string.IsNullOrEmpty(config.ApiKey))
+                if (!string.IsNullOrEmpty(config.Endpoint) && !string.IsNullOrEmpty(config.DeploymentName))
                 {
                     Console.WriteLine("Configuration loaded from appsettings.json");
                     Console.WriteLine($"Endpoint: {config.Endpoint}");

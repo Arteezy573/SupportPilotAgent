@@ -25,8 +25,6 @@ bld/
 *.sln.docstates
 
 # Configuration files with sensitive information
-appsettings.json
-appsettings.*.json
 !appsettings.example.json
 
 # OS generated files
