@@ -42,11 +42,12 @@ SupportPilotAgent/
 ## Prerequisites
 
 - .NET 8.0 or higher
-- Azure OpenAI access with API key and endpoint
+- Azure OpenAI access with Azure Identity authentication (or API key fallback)
 - Node.js (for MCP servers that require it)
 - NPX (comes with Node.js)
 - Azure DevOps organization (optional, for Azure DevOps MCP server)
-- MCP servers installed as needed (e.g., `@azure-devops/mcp`, `mcp-remote`)
+- Azure credentials configured (Azure CLI, Managed Identity, or Service Principal)
+- MCP servers installed as needed (e.g., `@azure-devops/mcp`, `mcp-remote`, Kusto MCP tools)
 
 ## Setup and Configuration
 
@@ -67,7 +68,7 @@ SupportPilotAgent/
    {
      "AzureOpenAI": {
        "Endpoint": "https://your-resource.openai.azure.com/",
-       "ApiKey": "your-api-key-here", 
+       "ApiKey": "your-api-key-here",
        "DeploymentName": "gpt-4",
        "ApiVersion": "2024-06-01"
      },
@@ -75,12 +76,21 @@ SupportPilotAgent/
        "azureDevops": {
          "command": "npx",
          "args": ["-y", "@azure-devops/mcp", "msazure"]
+       },
+       "kusto": {
+         "command": "npx",
+         "args": ["-y", "@kusto/mcp-server"]
        }
      }
    }
    ```
 
-   **Note**: You can comment out or add additional MCP servers as needed. The example shows Azure DevOps integration focused configuration.
+   **Authentication Options**:
+   - **Azure Identity (Recommended)**: Uses Azure CLI, Managed Identity, or Service Principal authentication
+   - **API Key (Fallback)**: Uses traditional API key authentication if Azure Identity fails
+   - The application will automatically attempt Azure Identity first, then fall back to API key
+
+   **Note**: You can comment out or add additional MCP servers as needed. The example shows Azure DevOps and Kusto integration focused configuration.
 
 3. **Build the project**:
    ```bash
@@ -97,10 +107,15 @@ SupportPilotAgent/
 
 If you don't have a configuration file, the application will prompt you interactively for:
 - Azure OpenAI Endpoint (e.g., `https://your-resource.openai.azure.com/`)
-- Azure OpenAI API Key  
+- Azure OpenAI API Key (if Azure Identity authentication fails)
 - Deployment Name (default: `gpt-4`)
 
 The application will offer to save these settings to `appsettings.json` for future use.
+
+**Authentication Flow**:
+1. Application first attempts Azure Identity authentication (no API key required)
+2. If Azure Identity fails, falls back to interactive prompt for API key
+3. Supports Azure CLI login, Managed Identity, and Service Principal authentication
 
 **Note**: The `appsettings.json` file is excluded from version control to protect your API keys.
 
@@ -123,6 +138,10 @@ The `McpServers` section in `appsettings.json` allows you to configure multiple 
   ```bash
   npx -y @azure-devops/mcp <organization>
   ```
+- **`@kusto/mcp-server`**: Kusto (Azure Data Explorer) MCP server for data analysis and querying
+  ```bash
+  npx -y @kusto/mcp-server
+  ```
 - **`mcp-remote`**: Connect to remote MCP endpoints
   ```bash
   npx -y mcp-remote <endpoint-url>
@@ -136,6 +155,10 @@ The `McpServers` section in `appsettings.json` allows you to configure multiple 
     "azureDevops": {
       "command": "npx",
       "args": ["-y", "@azure-devops/mcp", "your-org"]
+    },
+    "kusto": {
+      "command": "npx",
+      "args": ["-y", "@kusto/mcp-server"]
     },
     "filesystem": {
       "command": "npx", 
@@ -166,6 +189,7 @@ SupportPilot: [Searches Azure DevOps and correlates findings]
 ### **Supported Operations**
 - **Email Analysis**: Paste email content for automatic analysis
 - **Azure DevOps Integration**: Query work items, retrieve details, search by criteria
+- **Kusto Data Analysis**: Query Azure Data Explorer for telemetry and log analysis
 - **Root Cause Analysis**: Diagnostic recommendations and troubleshooting steps
 - **Ticket Management**: Categorization, priority assessment, and next steps
 - **Conversational Context**: Maintains conversation history for follow-up questions
@@ -223,6 +247,7 @@ SupportPilot Agent uses the official Model Context Protocol (MCP) for extensible
 ### **Supported MCP Servers**
 - **SupportPilot Server**: Custom MCP server for support-specific functions
 - **Azure DevOps Server**: Official `@azure-devops/mcp` for work item management
+- **Kusto Server**: `@kusto/mcp-server` for Azure Data Explorer integration and log analysis
 - **Microsoft Docs Server**: `mcp-remote` for accessing Microsoft Learn documentation
 - **Custom Servers**: Easy to add new MCP servers via configuration
 
@@ -291,9 +316,10 @@ This ticket has been analyzed and categorized. The diagnostic steps above should
 - **Microsoft Semantic Kernel Agent Framework**: AI agent orchestration with ChatCompletionAgent and ChatHistoryAgentThread
 - **Model Context Protocol (MCP)**: Extensible tool integration with multiple MCP servers
 - **Azure OpenAI**: AI model integration with gpt-4
+- **Azure Identity**: Token-based authentication with fallback to API key
 - **.NET 8.0**: Runtime platform with async/await patterns
 - **C#**: Programming language with modern features
-- **ModelContextProtocol NuGet Package**: Official .NET MCP client implementation
+- **ModelContextProtocol NuGet Package**: Official .NET MCP client implementation (v0.3.0-preview.4)
 - **Function Invocation Filters**: Real-time monitoring and logging of AI function calls
 
 ## Responsible AI Implementation
@@ -313,6 +339,21 @@ The agent is designed to:
 - **Reject Off-Topic Requests**: Politely redirect non-support related queries
 - **Maintain Professional Standards**: Refuse manipulative or unethical requests
 - **Provide Clear Boundaries**: Remind users of its role as a Support Pilot Agent when needed
+
+## Recent Updates
+
+### **Latest Changes** (2025-01-13)
+- **Azure Identity Integration**: Switched from API key to Azure Identity authentication with automatic fallback
+- **Kusto MCP Tools**: Added support for Azure Data Explorer integration via `@kusto/mcp-server`
+- **Enhanced Agent Prompting**: Improved agent prompt system for better response accuracy
+- **Token-based Authentication**: Now supports Azure CLI, Managed Identity, and Service Principal authentication
+- **Updated Dependencies**: Upgraded to Microsoft Semantic Kernel 1.65.0 and ModelContextProtocol 0.3.0-preview.4
+
+### **Authentication Improvements**
+- Primary authentication now uses Azure Identity (`Azure.Identity` v1.16.0)
+- Automatic fallback to API key authentication if Azure Identity fails
+- Supports multiple Azure authentication methods (CLI, Managed Identity, Service Principal)
+- Enhanced security with token-based authentication
 
 ## Future Enhancements
 
