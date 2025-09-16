@@ -61,6 +61,9 @@ namespace SupportPilotAgent.Services
                 "core_list_projects",
                 "wit_get_work_item",
                 "wit_create_work_item",
+                "search_code",
+                "search_wiki",
+                "search_workitem",
                 // azure mcp
                 "kusto",
                 // microsoft doc

@@ -19,7 +19,7 @@ namespace SupportPilotAgent.Services
                 {
                     var value = arg.Value?.ToString();
                     var truncatedValue = value?.Length > 100 ? value.Substring(0, 100) + "..." : value;
-                    Console.WriteLine($"  - {arg.Key}: {truncatedValue}");
+                    Console.WriteLine($"  - {arg.Key}: {value}");
                 }
             }
             

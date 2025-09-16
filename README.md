@@ -342,7 +342,14 @@ The agent is designed to:
 
 ## Recent Updates
 
-### **Latest Changes** (2025-01-13)
+### **Latest Changes** (2025-09-16)
+- **Web UI Interface**: Complete React frontend with Teams-like chat interface
+- **Agent Pre-initialization**: Agent now initializes during server startup for instant response times
+- **Response Formatting**: Automatic markdown formatting with professional styling
+- **Performance Optimization**: MCP servers load during startup, eliminating first-request delays
+- **Markdown Rendering**: Beautiful formatted responses with ReactMarkdown integration
+
+### **Previous Updates** (2025-01-13)
 - **Azure Identity Integration**: Switched from API key to Azure Identity authentication with automatic fallback
 - **Kusto MCP Tools**: Added support for Azure Data Explorer integration via `@kusto/mcp-server`
 - **Enhanced Agent Prompting**: Improved agent prompt system for better response accuracy
@@ -355,16 +362,98 @@ The agent is designed to:
 - Supports multiple Azure authentication methods (CLI, Managed Identity, Service Principal)
 - Enhanced security with token-based authentication
 
+## Web UI Interface
+
+SupportPilot Agent now includes a modern React frontend with a Teams-like chat interface:
+
+### **Frontend Setup**
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies (done automatically during setup)
+npm install
+
+# Start development server
+npm start
+```
+
+### **Frontend Features**
+- **Teams-like Chat Interface**: Modern, responsive chat UI similar to Microsoft Teams
+- **Real-time Messaging**: Send messages and receive AI responses instantly
+- **Message History**: Persistent chat history during session
+- **Typing Indicators**: Visual feedback when the agent is processing
+- **Error Handling**: Graceful error handling with user-friendly messages
+- **Responsive Design**: Works on desktop and mobile devices
+- **Professional Styling**: Clean, Microsoft-inspired design
+
+### **Architecture**
+- **Backend API**: ASP.NET Core Web API at `http://localhost:5000`
+  - `/api/chat/message` - POST endpoint for sending messages
+  - CORS enabled for frontend communication
+  - **Agent Pre-initialization**: SupportPilot Agent initializes during server startup for instant response times
+  - **MCP Server Loading**: All MCP servers and tools load during startup, not on first request
+  - **Response Formatting**: Automatic markdown formatting for professional chat responses
+  - Integrated with existing SupportPilotAgent functionality
+- **Frontend**: React TypeScript application at `http://localhost:3000`
+  - Modern React with TypeScript for type safety
+  - **Markdown Rendering**: ReactMarkdown for beautiful formatted responses
+  - Professional Teams-like styling with responsive design
+  - Fetch API for backend communication
+
+### **Running Both Services**
+
+1. **Start Backend (Terminal 1)**:
+   ```bash
+   dotnet run
+   ```
+   Server will start at http://localhost:5000
+
+2. **Start Frontend (Terminal 2)**:
+   ```bash
+   cd frontend
+   npm start
+   ```
+   React app will start at http://localhost:3000
+
+3. **Access the Application**:
+   Open your browser to http://localhost:3000 to use the chat interface.
+
+### **Project Structure Update**
+```
+SupportPilotAgent/
+├── Configuration/
+├── Services/
+├── Plugins/
+├── Controllers/
+│   └── ChatController.cs              # Web API controller for chat
+├── frontend/                          # React frontend application
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── ChatInterface.tsx      # Main chat component
+│   │   │   └── ChatInterface.css      # Chat styling
+│   │   ├── App.tsx                    # React app entry point
+│   │   └── App.css                    # App styling
+│   ├── public/                        # Static files
+│   └── package.json                   # Frontend dependencies
+├── Startup.cs                         # Web API configuration
+├── Program.cs                         # Web API entry point
+└── SupportPilotAgent.cs              # Core agent logic
+```
+
 ## Future Enhancements
 
 - **Environment Variables Support**: Add support for MCP server environment variables
 - **Enhanced Error Recovery**: Automatic MCP server restart and reconnection
 - **MCP Server Health Monitoring**: Real-time monitoring of MCP server status
 - **Dynamic MCP Loading**: Runtime addition/removal of MCP servers
-- **Web UI Interface**: Web-based interface for easier operation
 - **Enhanced Logging**: Structured logging with MCP server metrics
 - **Additional MCP Servers**: Integration with more official MCP servers
 - **Configuration Validation**: Validate MCP server configurations at startup
+- **File Upload Support**: Add support for uploading files and attachments
+- **Message Persistence**: Store chat history in database
+- **User Authentication**: Add user login and session management
+- **Admin Dashboard**: Management interface for monitoring and configuration
 
 ## License
 
